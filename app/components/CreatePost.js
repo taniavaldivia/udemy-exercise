@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import Page from "./Page"
 import Axios from "axios"
 
-function CreatePost() {
+function CreatePost(props) {
   const [title, setTitle] = useState()
   const [body, setBody] = useState()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await Axios.post("/create-post", {
+      const response = await Axios.post("/create-post", {
         title,
         body,
         token: localStorage.getItem("complexappToken"),
       })
+      // Redirect to new post url
+      props.addFlashMessage("Congrats, you succesfully created a post")
+      navigate(`/post/${response.data}`)
       console.log("New post was created.")
     } catch (e) {
       console.log("There was a problem.")
